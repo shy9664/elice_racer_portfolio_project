@@ -9,9 +9,11 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
 
+  // Private Route로 Navbar를 보이도록 해야할듯? 
+
   return (
     <Router>
-      <Switch>
+      <Switch> 
         <Route exact path='/'>
           <LoginPage />
         </Route>

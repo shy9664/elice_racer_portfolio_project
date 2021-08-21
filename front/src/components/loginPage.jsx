@@ -23,10 +23,10 @@ const LoginPage = () => {
     setLoginData(newLoginData)
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    login(loginData)
-    history.push('/main')
+    const id = await login(loginData)
+    history.push(`/main?id=${id}`)
   }
 
   return (

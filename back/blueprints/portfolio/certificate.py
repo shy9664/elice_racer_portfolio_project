@@ -20,14 +20,16 @@ def certificates():
     
     elif request.method == 'PATCH':
         pass
+
     elif request.method == 'DELETE':
         pass
+
     else: 
+        user_id = request.args['id']
         # 여러개 있으면 여러개 가져오도록 해야함 
-        stored_certificate = Certificate.query.filter(Certificate.user_id == session['login']).first()
-        return jsonify(data = {
-            'stored_certificate':[
-            stored_certificate.title,
-            stored_certificate.organization,
-            stored_certificate.date]})
-    
+        stored_certificate = Certificate.query.filter(Certificate.user_id == user_id).first()
+        return jsonify(data = [
+                {'title': stored_certificate.title},
+                {'organization': stored_certificate.organization},
+                {'date': stored_certificate.date}
+        ])
