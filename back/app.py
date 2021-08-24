@@ -4,6 +4,7 @@ from flask_cors import CORS
 from blueprints.login import Login
 from blueprints.register import Register
 from blueprints.logout import Logout
+from blueprints.network import Network
 
 from blueprints.portfolio.achievement import achievement
 from blueprints.portfolio.certificate import certificate
@@ -19,6 +20,8 @@ CORS(app)
 app.register_blueprint(Login)
 app.register_blueprint(Register)
 app.register_blueprint(Logout)
+app.register_blueprint(Network)
+
 app.register_blueprint(achievement)
 app.register_blueprint(certificate)
 

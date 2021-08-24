@@ -1,7 +1,7 @@
 import Navbar from './mainPageNav';
 import Certificate from './portfolio/certificate';
 import { useState } from 'react';
-import { useLocation, Redirect } from 'react-router-dom';
+import { useLocation, Redirect,  } from 'react-router-dom';
 
 const MainPage = () => {
   
@@ -15,16 +15,16 @@ const MainPage = () => {
   const location = useLocation()
   const searchParams = new URLSearchParams(location.search)
 
-  const id = searchParams.get('id')
+  const userId = searchParams.get('id')
 
-  if (!id) {
-    return <Redirect to='/login' />
+  if (!userId) {
+    return <Redirect to='/' />
   }
 
   return (
     <div>
       <Navbar />
-      <Certificate id={id}/>
+      <Certificate userId={userId}/>
     </div>
   )
 }
