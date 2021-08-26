@@ -9,7 +9,6 @@ const login = async (loginForm) => {
     
     const res = await axios.post(url, form);
 
-    console.log('user_id', res.data.data.user_id)
     return res.data.data.user_id
 }
 

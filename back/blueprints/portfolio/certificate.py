@@ -29,7 +29,6 @@ def certificates():
         stored_certificate.organization = organization
         stored_certificate.date = date
         db.session.commit()
-
         return jsonify('자격증 수정이 완료되었습니다')
 
     elif request.method == 'DELETE':

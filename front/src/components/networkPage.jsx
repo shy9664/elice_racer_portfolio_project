@@ -4,31 +4,38 @@ import { useEffect, useState } from 'react';
 import Network from './network';
 
 const NetworkPageWrapper = styled.div`
-  display: grid;
-  border: solid 1px black;
-`
 
+`
 
 const NetworkPage = () => {
 
   const [networkData, setNetworkData] = useState([]);
 
-  useEffect(() => {
-    fetchNetworkDatas()
-  }, [])
+  const [searchValue, setSearchValue] = useState('');
 
-  const fetchNetworkDatas = async () => {
-    const gotNetworkDatas = await getNetwork()
+  useEffect(() => {
+    fetchNetworkDatas(searchValue)
+  }, [searchValue])
+
+  const fetchNetworkDatas = async (searchValue) => {
+    const gotNetworkDatas = await getNetwork(searchValue)
     setNetworkData(gotNetworkDatas)
+  }
+
+  const handleChange = async (e) => {
+    setSearchValue(e.target.value)
   }
 
   return (
     <div>
-      <h2>네트워크 페이지 입니다</h2>
-      {(networkData.length == 0) ? <h3>유저가 없습니다</h3> :
-      <Network networkData={networkData}/>
-      }
+      <input onChange={handleChange} value={searchValue} placeholder='검색을 해보세요'></input>
+      <NetworkPageWrapper>
+        {(networkData.length === 0) ? <h3>유저가 없습니다</h3> :
+        <Network networkData={networkData}/>
+        }
+      </NetworkPageWrapper>
     </div>
+    
   )
 }
 

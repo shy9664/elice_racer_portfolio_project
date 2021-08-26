@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { addCertificates, deleteCertificates, getCertificates, updateCertificates } from "../../apis/certificate";
 import styled from 'styled-components'
-import DatePicker from 'react-datepicker'
+
 
 const StyledCertificate = styled.div`
   border: solid 1px black;
@@ -58,10 +58,10 @@ const NewCertificate = ({addState, setAddState, userId, setCertificateDatas, cer
   )
 }
 
-const CertificatePiece = ({id, title, organization, date, userId}) => { 
+const CertificatePiece = ({index, id, title, organization, date, userId, isLoggedUser, certificateDatas, setCertificateDatas}) => { 
 
-  const [editState, setEditState] = useState(false)  // True면 편집하는걸로 
-  const [editedCertificateData, setEditedCertificateData] = useState({title, organization, date});
+  const [editState, setEditState] = useState(false) 
+  const [editedCertificateData, setEditedCertificateData] = useState({id, title, organization, date}); // id도 넣어줘야함 !! 지못미 내로직..
 
   const handleEdit = () => {
     setEditState(!editState)
@@ -76,10 +76,16 @@ const CertificatePiece = ({id, title, organization, date, userId}) => {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    updateCertificates(id, editedCertificateData)  // 수정된 값으로 patch 날림 
-    setEditedCertificateData(editedCertificateData)  // set을해도, 부모가 넘겨주는 데이터가 동일하기때문에 안바뀌는듯. 
-    setEditState(!editState);  // 편집상태를 다시 조회상태로 되돌림.
-    window.location.reload()
+
+    updateCertificates(id, editedCertificateData)
+    // setEditedCertificateData(editedCertificateData)  // set을해도, 부모가 넘겨주는 데이터가 동일하기때문에 안바뀌는듯. 
+    //아. 화면상에서만 바꿀게 아니라,,, 부모컴포넌트에서 넘겨주는 데이터에서 그 인덱스에 맞는 컴포넌트를 수정하도록 해야되네. 
+    //근데 그럴려면.. 부모컴포넌트에서 넘겨주는 데이터의 인덱스에 대한 자료가 바뀌려면,, 
+    //실제 데이터가 달라야함.. 아. 부모의 state인 certificateDatas를 바꾸면 되려나? 
+    const editCompleteData = [...certificateDatas] // 여기서는 또 없는 id인것을 받아와버리니까..!
+    editCompleteData.splice(index, 1, editedCertificateData)
+    setCertificateDatas(editCompleteData)
+    setEditState(!editState);
   }
 
   const handleDeleteBtn = () => {
@@ -94,7 +100,7 @@ const CertificatePiece = ({id, title, organization, date, userId}) => {
       <p>자격증 명: {title}</p>
       <p>발급 기관 :{organization}</p>
       <p>취득 날짜: {date}</p>
-      <button onClick={handleEdit}>편집하기</button>
+      {userId === isLoggedUser && <button onClick={handleEdit}>편집하기</button> }
     </div>
     :
     <form onSubmit={handleSubmit}>
@@ -112,38 +118,41 @@ const CertificatePiece = ({id, title, organization, date, userId}) => {
   )
 }
 
-const Certificate = ({userId}) => { // id는 로그인한 유저 id임 
+const Certificate = ({userId, isLoggedUser}) => {
+  
+  const [addState, setAddState] = useState(false)
 
-  console.log('hi')
+  const [certificateDatas, setCertificateDatas] = useState([]);
 
-  const [addState, setAddState] = useState(false) // True면 추가하는 폼을 렌더링하는걸로
-
-  const [certificateDatas, setCertificateDatas] = useState([]);  // patch, delete, create할 때 이걸 바꿔줘야하는데
-
-  useEffect(() => {
+  useEffect(() => {  // 이걸 다른 포트폴리오 정보들과 묶어서 한 번에 했어야 했음. 메인페이지 같은 데서. 
     fetchCertificateDatas()
-}, [])   
+}, [])
+
+  useEffect(() => {  // 추가했을 때 재렌더링되도록.. 근데 왜 true일때 정상작동하는것처럼 보이지? false를 유도해야하는데. 그래서.. 새로 추가한건 id가 없음.. 해결못함.. 
+    if (addState === true) {
+    fetchCertificateDatas()}
+  }, [addState])
 
   const fetchCertificateDatas = async () => {
     const gotCertificateDatas = await getCertificates(userId)
-    setCertificateDatas(gotCertificateDatas)         // 반복문도.. 안됨.. 왜 무한루프돌지?
+    setCertificateDatas(gotCertificateDatas)
   }
 
   const handleAddBtn = () => {
     setAddState(!addState)
   }
   
-  const certificateDataslist = certificateDatas.map((certificateData,i) => 
-    <div key={i}>
-      <CertificatePiece id={certificateData.id} title={certificateData.title} organization={certificateData.organization} date={certificateData.date} userId={userId} />
-    </div>
+  const certificateDataslist = certificateDatas.map((certificateData, i) => 
+      <div key={i}>    
+        <CertificatePiece index={i} id={certificateData.id} title={certificateData.title} organization={certificateData.organization} date={certificateData.date} userId={userId} isLoggedUser={isLoggedUser} certificateDatas={certificateDatas} setCertificateDatas={setCertificateDatas}/>
+      </div>
     );
 
   return (
     <StyledCertificate>
       <h3>자격증</h3>
       {certificateDatas && certificateDataslist}
-      {!addState ? <button onClick={handleAddBtn}>자격증 추가하기</button> : null}
+      {(userId === isLoggedUser) && !addState ? <button onClick={handleAddBtn}>자격증 추가하기</button> : null}
       <NewCertificate addState={addState} setAddState={setAddState} userId={userId} setCertificateDatas={setCertificateDatas} certificateDatas={certificateDatas} />
     </StyledCertificate>
   )

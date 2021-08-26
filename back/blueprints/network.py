@@ -1,15 +1,29 @@
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, request
 from models.user import User
 
 Network = Blueprint('Network', __name__)
 
 @Network.route('/network')
 def network():
-  all_user = User.query.all()
-  users = []
-  for user in all_user:
-    users.append({
-      'user_name':user.name,
-    })
+  if request.args['search'] == 'all':
+    all_user = User.query.all()
 
-  return jsonify(data = users)
+    users = []
+    for user in all_user:
+      users.append({
+        'user_name':user.name,
+        'user_id':user.user_id
+      })
+    return jsonify(data = users)
+
+  else:
+    search_value = request.args['search'] 
+    searched_users = User.query.filter(User.name.like(f'%{search_value}%')).all()
+
+    users = []
+    for user in searched_users:
+      users.append({
+        'user_name':user.name,
+        'user_id':user.user_id
+      })
+    return jsonify(data = users)

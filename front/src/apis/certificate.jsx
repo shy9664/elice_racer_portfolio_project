@@ -5,12 +5,12 @@ export const getCertificates = async (userId) => {
   const url = 'http://127.0.0.1:5000/portfolio/certificate';
 
   const res = await axios.get(url, {params: {id:userId}})
+  
   return res.data.data
 }
 
 
 export const updateCertificates = async (certId, editedCertificateData) => {
-
   const url = 'http://127.0.0.1:5000/portfolio/certificate'
 
   let form = new FormData()
@@ -20,8 +20,7 @@ export const updateCertificates = async (certId, editedCertificateData) => {
   form.append('date', editedCertificateData.date)
   form.append('id', certId)
 
-  const res = await axios.patch(url, form)
-
+  await axios.patch(url, form)
   return
 }
 
@@ -36,7 +35,7 @@ export const addCertificates = async (userId, newCertificateData) => {
   form.append('date', newCertificateData.date)
   form.append('user_id', userId)
 
-  const res = await axios.post(url, form)
+  await axios.post(url, form)
 
   return 
 }
@@ -45,7 +44,7 @@ export const deleteCertificates = async (certId) => {
 
   const url = 'http://127.0.0.1:5000/portfolio/certificate'
 
-  const res = await axios.delete(url, {params: {cert_id: certId}})
-  console.log(res.data)
+  await axios.delete(url, {params: {cert_id: certId}})
+  
   return
 }

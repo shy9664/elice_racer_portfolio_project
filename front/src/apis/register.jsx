@@ -9,9 +9,8 @@ const register = async (registerForm) => {
     form.append('user_pw2', registerForm.userPw2)
     form.append('user_name', registerForm.userName)
     
-    const res = await axios.post(url, form);
-    
-    console.log(res.status, res.data)
+    await axios.post(url, form);
+
 }
 
 export default register;
