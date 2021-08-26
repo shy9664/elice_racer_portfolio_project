@@ -1,5 +1,4 @@
 import axios from "axios"
-import { useHistory } from "react-router";
 
 const login = async (loginForm) => {
 
@@ -10,9 +9,7 @@ const login = async (loginForm) => {
     
     const res = await axios.post(url, form);
 
-    console.log(res.status, res.data.data.user_name)
-
-    
+    return res.data.data.user_id
 }
 
 export default login;

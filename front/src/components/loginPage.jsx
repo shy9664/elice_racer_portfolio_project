@@ -1,7 +1,10 @@
 import styled from 'styled-components'
-import { Link, useHistory } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 import { useState } from 'react'
 import login from '../apis/login'
+
+import { useDispatch } from 'react-redux'
+import userLogin from '../redux/action'
 
 const LoginCSS = styled.div`
   display: flex;
@@ -11,6 +14,8 @@ const LoginCSS = styled.div`
 `
 
 const LoginPage = () => {
+
+  const dispatch = useDispatch();
 
   const history = useHistory();
   
@@ -23,10 +28,15 @@ const LoginPage = () => {
     setLoginData(newLoginData)
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    login(loginData)
-    history.push('/main')
+    const userId = await login(loginData)
+    dispatch(userLogin(userId))
+    history.push(`/main?id=${userId}`)
+  }
+
+  const handleRegister = () => {
+    history.push('/register')
   }
 
   return (
@@ -34,16 +44,16 @@ const LoginPage = () => {
       <form onSubmit={handleSubmit}>
         <div>
           <label htmlFor="id">아이디</label><br />
-          <input value={loginData.userId} onChange={handleChange} id='id' name='userId'/>
+          <input value={loginData.userId} onChange={handleChange} id='id' name='userId' required/>
         </div>
         <div>
           <label htmlFor='pw'>비밀번호</label><br />
-          <input value={loginData.userPw} onChange={handleChange} type="password" id='pw' name='userPw'/>
+          <input value={loginData.userPw} onChange={handleChange} type="password" id='pw' name='userPw' required/>
         </div>
         <button type='submit'>로그인</button>
+        <button type='button' onClick={handleRegister}>회원가입</button>
       </form>
       <div>
-        <Link to='/register'>회원가입하기</Link>
       </div>
     </LoginCSS>
   )
