@@ -3,7 +3,7 @@ from models.user import User
 from db_connect import db
 
 
-Register = Blueprint('Register', __name__)
+Register = Blueprint('Register', __name__, url_prefix='/api')
 
 
 @Register.route('/register', methods=['GET', 'POST'])

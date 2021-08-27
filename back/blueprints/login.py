@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify, session
 from models.user import User
 
-Login = Blueprint('Login', __name__)
+Login = Blueprint('Login', __name__, url_prefix='/api')
 
 @Login.route('/', methods=['GET', 'POST'])
 def login():
