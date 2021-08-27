@@ -2,7 +2,7 @@ import axios from "axios"
 
 const register = async (registerForm) => {
     
-    const url = 'http://localhost:5000/api/register'; 
+    const url = 'http://kdt-1st-project-74.koreacentral.cloudapp.azure.com/api/register'; 
     let form = new FormData()
     form.append('user_id', registerForm.userId)
     form.append('user_pw', registerForm.userPw)
