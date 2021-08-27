@@ -2,7 +2,7 @@ import axios from "axios";
 
 export const getNetwork = async (searchValue) => {
 
-  const url = 'http://localhost:5000/api/network';
+  const url = 'http://kdt-1st-project-74.koreacentral.cloudapp.azure.com/api/network';
 
   if (searchValue === '') {searchValue = 'all'}
   const res = await axios.get(url, {params: {search:searchValue}});
